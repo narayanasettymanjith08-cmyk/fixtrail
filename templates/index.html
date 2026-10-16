@@ -1,0 +1,220 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b1020">
+    <title>FixTrail AI | Python Coding Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body>
+    <div class="app-shell">
+
+        <aside class="sidebar">
+            <a href="/" class="brand">
+                <div class="brand-icon">F</div>
+                <div>
+                    <strong>FixTrail <span>AI</span></strong>
+                    <small>Python workspace</small>
+                </div>
+            </a>
+
+            <div class="sidebar-label">WORKSPACE</div>
+            <button class="nav-item active" id="newTaskBtn">
+                <span>＋</span> New task
+            </button>
+            <button class="nav-item" id="focusEditorBtn">
+                <span>&lt;/&gt;</span> Code workspace
+            </button>
+            <button class="nav-item" id="focusResultsBtn">
+                <span>✓</span> Verification
+            </button>
+
+            <div class="sidebar-card">
+                <div class="sidebar-card-icon">⌘</div>
+                <strong>Verify, don't guess.</strong>
+                <p>AI suggestions are separate from actual code-check results.</p>
+            </div>
+
+            <div class="sidebar-bottom">
+                <div class="connection-row">
+                    <span class="status-dot" id="connectionDot"></span>
+                    <div>
+                        <strong id="connectionTitle">Checking local AI...</strong>
+                        <small id="connectionText">Checking Ollama and Gemma</small>
+                    </div>
+                </div>
+                <div class="privacy-note">Runs locally · Python only</div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <div class="eyebrow">YOUR LOCAL CODING ASSISTANT</div>
+                    <h1>Python workspace</h1>
+                </div>
+                <div class="topbar-right">
+                    <span class="model-chip">
+                        <span class="tiny-dot"></span>
+                        Gemma · Ollama
+                    </span>
+                    <button class="button button-quiet" id="healthBtn">Check status</button>
+                </div>
+            </header>
+
+            <section class="welcome-section">
+                <div class="welcome-copy">
+                    <div class="welcome-badge"><span>✦</span> Built for clearer debugging</div>
+                    <h2>Build it. Understand it.<br><span>Verify it.</span></h2>
+                    <p>Write Python programs, investigate errors, and understand code with help from your AI assistant.</p>
+                </div>
+                <div class="welcome-graphic" aria-hidden="true">
+                    <div class="graphic-orbit orbit-one"></div>
+                    <div class="graphic-orbit orbit-two"></div>
+                    <div class="graphic-core">&lt;/&gt;</div>
+                    <div class="graphic-check">✓</div>
+                </div>
+            </section>
+
+            <section class="workspace-grid">
+                <section class="panel editor-panel" id="editorPanel">
+                    <div class="panel-heading">
+                        <div>
+                            <div class="section-kicker">STEP 01</div>
+                            <h3>Describe your task</h3>
+                        </div>
+                        <span class="language-chip">Python</span>
+                    </div>
+
+                    <label for="taskType">What do you want FixTrail to do?</label>
+                    <select id="taskType">
+                        <option value="generate">Write a new program</option>
+                        <option value="debug">Debug my existing code</option>
+                        <option value="explain">Explain code or a concept</option>
+                        <option value="review">Review my code</option>
+                    </select>
+
+                    <label for="problemInput">Your request and/or Python code</label>
+                    <textarea id="problemInput" spellcheck="false"
+                        placeholder="Example: Write a Python program that checks whether a number is even or odd. Take input from the user and explain the code."></textarea>
+
+                    <div class="editor-hint">
+                        <span>Tip: include your exact code and error message when debugging.</span>
+                        <span id="characterCount">0 characters</span>
+                    </div>
+
+                    <div class="editor-actions">
+                        <button class="button button-secondary" id="clearBtn">Clear</button>
+                        <button class="button button-primary" id="submitBtn">
+                            <span id="submitIcon">✦</span>
+                            <span id="submitText">Ask FixTrail AI</span>
+                        </button>
+                    </div>
+
+                    <div class="privacy-note editor-privacy">
+                        Your request stays on this computer and is sent to local Ollama.
+                    </div>
+                </section>
+
+                <section class="panel verification-panel" id="verificationPanel">
+                    <div class="panel-heading">
+                        <div>
+                            <div class="section-kicker">STEP 02</div>
+                            <h3>Verification center</h3>
+                        </div>
+                        <span class="status-pill status-pending" id="verificationBadge">
+                            Not connected
+                        </span>
+                    </div>
+
+                    <p class="panel-description">
+                        These checks must be performed by verification tools—not guessed by the AI.
+                    </p>
+
+                    <div class="check-list">
+                        <div class="check-row">
+                            <div class="check-icon" id="syntaxIcon">⌁</div>
+                            <div class="check-copy">
+                                <strong>Python syntax</strong>
+                                <span id="syntaxText">Waiting for verification engine</span>
+                            </div>
+                            <span class="check-state" id="syntaxState">Pending</span>
+                        </div>
+
+                        <div class="check-row">
+                            <div class="check-icon" id="analysisIcon">⌕</div>
+                            <div class="check-copy">
+                                <strong>Code analysis</strong>
+                                <span id="analysisText">Static analysis not connected</span>
+                            </div>
+                            <span class="check-state" id="analysisState">Pending</span>
+                        </div>
+
+                        <div class="check-row">
+                            <div class="check-icon" id="testsIcon">▷</div>
+                            <div class="check-copy">
+                                <strong>Runtime and tests</strong>
+                                <span id="testsText">No test results available</span>
+                            </div>
+                            <span class="check-state" id="testsState">Pending</span>
+                        </div>
+                    </div>
+
+                    <div class="verification-note" id="verificationNote">
+                        <strong>Verification is not connected yet.</strong>
+                        <p>AI-generated code is not automatically considered correct. We'll connect real checks in the backend next.</p>
+                    </div>
+
+                    <div class="verification-footer">
+                        <span class="status-dot muted-dot"></span>
+                        <span>Unverified output is never marked as passed.</span>
+                    </div>
+                </section>
+            </section>
+
+            <section class="panel response-panel" id="responsePanel">
+                <div class="panel-heading response-heading">
+                    <div>
+                        <div class="section-kicker">STEP 03</div>
+                        <h3>FixTrail's response</h3>
+                    </div>
+                    <button class="button button-secondary button-small" id="copyBtn" disabled>
+                        Copy response
+                    </button>
+                </div>
+
+                <div class="response-content" id="responseContent" aria-live="polite">
+                    <div class="empty-state" id="emptyState">
+                        <div class="empty-icon">✦</div>
+                        <h4>Your coding workspace is ready</h4>
+                        <p>Describe a Python task on the left. Your response will appear here.</p>
+                        <div class="example-prompts">
+                            <button class="example-prompt" data-prompt="Write a Python program to check whether a number is even or odd. Take input from the user and explain the code." data-type="generate">
+                                Write an even/odd program <span>↗</span>
+                            </button>
+                            <button class="example-prompt" data-prompt="Explain Python for loops with a simple example." data-type="explain">
+                                Explain Python for loops <span>↗</span>
+                            </button>
+                            <button class="example-prompt" data-prompt="Review this code and identify any actual errors:\n\nnumber = int(input('Enter a number: '))\nif number % 2 == 0:\n    print('Even')\nelse:\n    print('Odd')" data-type="review">
+                                Review sample code <span>↗</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="answerOutput" class="answer-output hidden"></div>
+                </div>
+            </section>
+
+            <footer class="page-footer">
+                <span>FixTrail AI</span>
+                <span>Offline-capable Python assistance · Verify before you trust</span>
+            </footer>
+        </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
